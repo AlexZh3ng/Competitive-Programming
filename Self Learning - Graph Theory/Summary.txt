@@ -1,0 +1,99 @@
+data structures:
+-adjacency list
+-adjacency matrix
+-edge list (an unorganized lists of nodes) 
+-grids can be converted into matrices/list, kinda useless tho
+
+dfs: 
+-traversing graph
+-finding components (subgraphs that are connected together) 
+--> loop through all nodes, dfs making sure they arent visited, put count variable. 
+
+bfs: 
+-shortest path of unweighted graph 
+--> queue from start node to end node, keeping track of previous nodes using an array. (index is the node number, element is the node it came from) 
+--> backtrack from end to start 
+-same can be done with grid
+
+topological sort: 
+-finds all necessary prerequisites of a graph 
+-loop through all unvisited nodes, dfs, if no nodes avaliable, put node in list. all nodes will then be in reverse topological order. 
+-Used to find shortest path on weighted DAGs. In topological order, loop through each node explore edges and update each path distance.
+
+djikstra's algorithm: 
+-finds shortest path given no weights are negative. 
+-must have start node (given or from topological sort), put (distance, index) in priority queue, traverse adjacents and put into queue if weight + currentDistance < minDistance.  
+-to optimize: do you even to do this? make sure you dont repeat visited nodes (double check). (pretty sure this works but if not, just check if currentDist < minDist)
+-to find the actual path, put the previous node in an arrays
+
+bellman ford algorithm: 
+-finds shortest path. worse than djikstra's in time complexity BUT works for negative weighted graphs
+-used to detect negative cycles and nodes directly affected my negative cycles
+-set array of nodes to infinity, and start node distance to 0. for each node in the array if the dist + edge < minDist, update array. do this nodes - 1 times. 
+-to detect negative cycles: do the same thing again. now if the array updates, it means its affected my a negative cycle. (remember to loop nodes - 1 times again) 
+
+floyd marshall algorithm: (insanely hard)
+-finds shortest path between all pairs of nodes
+-used for small, dense graphs (adjacency matrix) V < 100 pref, make sure if you cannot travel to another node, make it infinite.
+-setup: create a graph n x n. fill each cell with the value from i to j. (or just copy the graph) 
+-if you want to find the actual path later on: make another graph nxn size. fill each cell from i to j IF it is not infinite. 
+-then make a triple for loop: k, i, j < n: if dp[i][k] + dp [k][j] < dp[i][j], dp[i][j] = dp[i][k] + dp [k][j], next[i][j] = next[i][k]
+https://media.discordapp.net/attachments/562847864464605194/674781234550800434/unknown.png?width=1192&height=671
+-to check if there are negative cycles, rerun the algorithm, if the best distance changes, set it to -inf. next[i][j] = -1.
+
+bridges/articulation point algorithm: 
+-bridges are edges on the graph if removed will disconnect two components of the graph 
+-dfs through each node, keeping track of the parent, low-links and count 
+-set the lowlink and id to count. explore through each connected node making sure its not the parent.
+-if the node is already visited, then the low link-id should be the minismum between the current lowlink and the visited node's id
+-if its not traverse through that node, then during the callback, make the lowlink min(at, to). if lowlink[at] < id[to], then there's a bridge.
+beyond this i dont understand shit 
+-the articulation point is a node if removed will disconnect two components of the graph
+-the articulation point is either one of the two nodes connected in the bridge 
+-another way it can be articulation point: id[at] == low[to] (its a root node) 
+exception: its a lone node, the only nodes its connected to are part of the cycle. (1 outgoing node)
+this still doesnt cover all cases???? --> try these 3 conditions: 1. if id[at] < id[to] (bridge) and not a lone node. 2. id[at] == id[to] and connected to another cycle. 3. more than 1 outgoing node.
+
+tarjan's strongly connected components algorithm
+-finds SCCs --> cycles that connect to each other but if you leave, cannot get back to in a directed graph
+-dfs through all nodes, add node to stack, explore neighbours. if neighbour is in stack and visited already, lowlink is min(cur, to) 
+-on callback lowlink is min(cur, to) 
+-if it is the root node (ids[cur] == low[cur]), remove everything from stack up to root node. 
+
+eularian paths/circuits 
+-paths that visit each edge a single time 
+-undirected: all even degrees, or exactly two nodes have odd degrees
+-directed: equal in/out degrees. at most 1 degree in - out = 1 and at most out - in = 1
+-circuits that visit each edge and go back to the start
+-undirected: all even degrees
+-directed: all nodes have equal in/out degrees
+-to find the path itself, make sure it has a eularian path. the start node is the one with more outs than ins. if its a circuits, make sure it doesnt start on a singleton node.
+-in the dfs function, while out[at] != 0, go through all neighbours, subtract 1 from the out array
+-when the while loop exits, at the node to the path. 
+-make sure the path size is m + 1
+
+lazy prims minimum spanning trees algorithm
+-spanning trees are a subset of nodes of a graph that visit each node one time with no cycles (at minimum cost) 
+-use djikstra's and queue the minimum edge weight to a node, its parent and itself (obviously) 
+-to check if one exists: make sure edgecount == m 
+-might make an ipq class if its more efficient?
+
+max flow: 
+-augmenting path, any path that goes from start to finish and has an unused capacity
+-go through all augmenting paths, find the bottleneck value (difference between max and capacity), make a residual path backwards. add that capacity
+-add the sums of all bottleneck values. 
+-using ford fulkerson do dfs 
+-using edmonds karp use bfs (better time complexity)
+-capacity scaling --> try to find largest bottleneck values. 
+
+dinic's algorithm: 
+-the best max flow algorithm
+-first make a level graph through bfs (if never reached, 0)
+-dfs through nodes, only going higher in level until sink is reached, until no capacity remaining
+-recreate level graph, and repeat.
+
+bipartite graphs: 
+-bipartite graphs have two parts --> U and V where Us are connected to Vs and vice versa
+-a matching problem of Us and Vs can be changed into a max flow algorithm. 
+-connect the source to Us, connect Us to their respecive Vs and connect Vs to the end. 
+-Source to U represents how many books U can take, U to V represents the amount of copies of book V that can be taken from U and V to end represents the number of book V. 
