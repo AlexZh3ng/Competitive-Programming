@@ -47,7 +47,6 @@ bridges/articulation point algorithm:
 -set the lowlink and id to count. explore through each connected node making sure its not the parent.
 -if the node is already visited, then the low link-id should be the minismum between the current lowlink and the visited node's id
 -if its not traverse through that node, then during the callback, make the lowlink min(at, to). if lowlink[at] < id[to], then there's a bridge.
-beyond this i dont understand shit 
 -the articulation point is a node if removed will disconnect two components of the graph
 -the articulation point is either one of the two nodes connected in the bridge 
 -another way it can be articulation point: id[at] == low[to] (its a root node) 
