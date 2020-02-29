@@ -38,7 +38,6 @@ floyd marshall algorithm: (insanely hard)
 -setup: create a graph n x n. fill each cell with the value from i to j. (or just copy the graph) 
 -if you want to find the actual path later on: make another graph nxn size. fill each cell from i to j IF it is not infinite. 
 -then make a triple for loop: k, i, j < n: if dp[i][k] + dp [k][j] < dp[i][j], dp[i][j] = dp[i][k] + dp [k][j], next[i][j] = next[i][k]
-https://media.discordapp.net/attachments/562847864464605194/674781234550800434/unknown.png?width=1192&height=671
 -to check if there are negative cycles, rerun the algorithm, if the best distance changes, set it to -inf. next[i][j] = -1.
 
 bridges/articulation point algorithm: 
